@@ -7,38 +7,38 @@ pipeline {
       }
     }
 
-    stage('Conda Enviroment') {
-      parallel {
-        stage('Environment') {
-          steps {
-            sh 'conda create -y --name test_env python==3.8'
-          }
-        }
-
-        stage('Requirements') {
-          steps {
-            sh 'conda install -y --file requirements.txt'
-          }
-        }
-
-        stage('Activation') {
-          steps {
-            sh 'conda activate test_env'
-          }
-        }
-
+    stage('Environment') {
+      steps {
+        sh 'conda create -y --name test_env python==3.8'
+        sh 'conda install -y --file requirements.txt'
+        sh 'conda activate test_env'
       }
     }
 
     stage('Test') {
-      environment {
-        MENSAGEM = 'legal'
-      }
-      steps {
-        echo '${env.MENSAGEM}'
-        sh '''python -V
+      parallel {
+        stage('Env') {
+          environment {
+            MENSAGEM = 'legal'
+          }
+          steps {
+            echo '${env.MENSAGEM}'
+          }
+        }
+
+        stage('Python3') {
+          steps {
+            sh '''python -V
 python3.8 -V'''
-        sh 'pytest -v'
+          }
+        }
+
+        stage('PyTest') {
+          steps {
+            sh 'pytest -v'
+          }
+        }
+
       }
     }
 
