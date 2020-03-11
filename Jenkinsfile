@@ -9,7 +9,7 @@ pipeline {
           }
         }
 
-        stage('') {
+        stage('Wait') {
           steps {
             sleep 5
           }
@@ -20,7 +20,8 @@ pipeline {
 
     stage('Install') {
       steps {
-        mail(subject: 'Teste Jenkins CI', body: 'Isto é um teste de e-mail automatizado pelo Jenkins quando houver algum commit/pull-request', to: 'guilherme.santos165@fatec.sp.gov.br', from: 'jenkins@msteams.com')
+        sh 'pip install -r requirements.txt'
+        sh 'python3 -m flask run'
       }
     }
 
@@ -30,6 +31,7 @@ pipeline {
       }
       steps {
         echo '${env.MENSAGEM}'
+        sh 'pytest -v'
       }
     }
 
