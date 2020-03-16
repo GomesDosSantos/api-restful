@@ -9,7 +9,7 @@ pipeline {
 
     stage('Environment') {
       steps {
-        sh 'pip install --upgrade --no-deps --force-reinstall -r requirements.txt'
+        sh 'pip3 install --upgrade --no-deps --force-reinstall -r requirements.txt'
       }
     }
 
