@@ -33,8 +33,8 @@ python3.8 -V'''
 
         stage('PyTest') {
           steps {
-            sh 'pytest -v'
-            sh 'pytest -v | tee pytest-log.log'
+            sh 'pytest-3 -v'
+            sh 'pytest-3 -v | tee pytest-log.log'
           }
         }
 
