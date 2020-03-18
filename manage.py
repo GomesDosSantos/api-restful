@@ -1,7 +1,7 @@
 import contextlib
 import os
 from pathlib import Path
-from api_flask import app
+from api_flask.controller import app
 from flask_script import Manager
 
 manager = Manager(app)
@@ -18,14 +18,14 @@ def working_directory(path):
         os.chdir(owd)
 
 @manager.command
-def run():
+def run(port_number):
     host = os.environ.get('SERVER_HOST', '0.0.0.0')
     try:
-        port = int(os.environ.get('PORT', '5000'))
+        port = int(os.environ.get('PORT', str(port_number)))
     except ValueError:
         port = 5000
 
-    app.run(host, port)
+    app.run(host, port, debug=True)
 
 if __name__ == '__main__':
     manager.run()

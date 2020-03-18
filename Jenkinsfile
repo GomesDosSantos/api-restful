@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Clone') {
       steps {
-        git(url: 'https://github.com/GomesDosSantos/api-restful.git', branch: 'master')
+        git(url: 'https://github.com/ProjetoIntegradorADSFatec/api-restful.git', branch: 'master')
       }
     }
 
@@ -15,26 +15,9 @@ pipeline {
 
     stage('Test') {
       parallel {
-        stage('Env') {
-          environment {
-            MENSAGEM = 'legal'
-          }
-          steps {
-            echo '${env.MENSAGEM}'
-          }
-        }
-
-        stage('Python3') {
-          steps {
-            sh '''python -V
-python3.8 -V'''
-          }
-        }
-
         stage('PyTest') {
           steps {
             sh 'pytest-3 -v'
-            sh 'pytest-3 -v | tee pytest-log.log'
           }
         }
 
