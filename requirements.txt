@@ -12,3 +12,5 @@ flask_jsonpify
 pytest
 flask_script
 docker-py
+requests
+dateutils
