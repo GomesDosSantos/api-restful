@@ -35,8 +35,7 @@ Este projeto consiste em:
     2. *Environment*: Instala as dependências do projeto;
     3. *Testes*: Execução dos Testes JUnit.
 
-    Configuar Webhook no GitHUB para o *endpoint* do Jenkins (*URL do ngrok se foi utilizado*) e ativar a opção:
-    * GitHub hook trigger for GITScm polling
+    Configuar Webhook no GitHUB para o *endpoint* do Jenkins (*URL do ngrok se foi utilizado*).
 
 ---
 
