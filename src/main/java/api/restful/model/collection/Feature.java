@@ -1,17 +1,26 @@
 package api.restful.model.collection;
 
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonView;
+import api.restful.model.views.Views;
 
 import api.restful.model.geojson.Geometry;
 import api.restful.model.geojson.Properties;
 
 public class Feature {
+    @JsonView(Views.Internal.class)
     private Long id;
+    @JsonView({Views.Public.class, Views.Internal.class})
     private List<Asset> assets;
+    @JsonView(Views.Internal.class)
     private List<Double> bbox;
+    @JsonView(Views.Internal.class)
     private String collection;
+    @JsonView(Views.Internal.class)
     private Geometry geometry;
+    @JsonView(Views.Internal.class)
     private Properties properties;
+    @JsonView(Views.Internal.class)
     private String type;
 
     public Feature() { }

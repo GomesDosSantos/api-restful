@@ -1,7 +1,12 @@
 package api.restful.model.collection;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import api.restful.model.views.Views;
+
 public class Asset {
+    @JsonView(Views.Public.class)
     private String name;
+    @JsonView(Views.Internal.class)
     private String href;
 
     public Asset() {}

@@ -2,10 +2,17 @@ package api.restful.model.collection;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import api.restful.model.views.Views;
+
 public class Item {
+    @JsonView(Views.Public.class)
     private List<Feature> features;
+    @JsonView(Views.Public.class)
     private int numberMatched;
+    @JsonView(Views.Public.class)
     private int numberReturned;
+    @JsonView(Views.Public.class)
     private String type;
 
     public Item() { }

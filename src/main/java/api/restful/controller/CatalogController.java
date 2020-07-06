@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-// import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.JsonView;
 
-// import api.restful.model.views.Views;
+import api.restful.model.views.Views;
 import api.restful.model.catalog.Catalog;
 import api.restful.model.collection.Item;
 import api.restful.model.geojson.Geojson;
@@ -31,8 +31,8 @@ public class CatalogController {
 		this.service = service;
 	}
 
-	// @JsonView(Views.Public.class)
-	@RequestMapping(value = "/list", method = RequestMethod.GET, produces = "application/json")
+	@JsonView(Views.Public.class)
+	@RequestMapping(value = "/list", method = RequestMethod.GET) // , produces = "application/json")
 	public Item catalog_list() {
 		try {
 			return this.service.listItems();
