@@ -2,6 +2,7 @@ package api.restful.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,50 +32,50 @@ public class CatalogController {
 		this.service = service;
 	}
 
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	@JsonView(Views.Public.class)
-	@RequestMapping(value = "/list", method = RequestMethod.GET) // , produces = "application/json")
-	public Item catalog_list() {
+	public ResponseEntity<Item> catalog_list() {
 		try {
-			return this.service.listItems();
+			return new ResponseEntity<Item> (this.service.listItems(), HttpStatus.OK);
 		}  catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Catalog list not found can not connect", e);
+			return new ResponseEntity<Item>(HttpStatus.NOT_FOUND);
 	   	}
 	}
 
-	@RequestMapping(value = "/search", method = RequestMethod.POST, produces = "application/json")
-	public Item catalog_search(@RequestBody Geojson geojson) {
+	@RequestMapping(value = "/search", method = RequestMethod.POST)
+	public ResponseEntity<Item> catalog_search(@RequestBody Geojson geojson) {
 		try {
-			return this.service.search(geojson);
+			return new ResponseEntity<Item> (this.service.search(geojson), HttpStatus.OK);
 		}  catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Catalog list not found can not connect", e);
+			return new ResponseEntity<Item> (HttpStatus.NOT_FOUND);
 		}
 	}
 
-	@RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json")
-	public Catalog add_catalog(@RequestBody Catalog catalog) {
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	public ResponseEntity<Catalog> add_catalog(@RequestBody Catalog catalog) {
 		try {
 			Catalog c = (Catalog) catalog;
 			if (this.service.add(c)) {
-				return c;
+				return new ResponseEntity<Catalog> (c, HttpStatus.OK);
 			} else {
-				return new Catalog();
+				return new ResponseEntity<Catalog> (new Catalog(), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Catalog can not be created", e);
+			return new ResponseEntity<Catalog> (HttpStatus.BAD_REQUEST);
 		}
 	}
 
-	@RequestMapping(value = "/remove", method = RequestMethod.DELETE, produces = "application/json")
-	public Catalog remove_catalog(@RequestParam String id) {
+	@RequestMapping(value = "/remove", method = RequestMethod.DELETE)
+	public ResponseEntity<Catalog> remove_catalog(@RequestParam String id) {
 		try {
 			Catalog c = (Catalog) this.service.findById(new Long(id));
 			if (this.service.remove(c)) {
-				return c;
+				return new ResponseEntity<Catalog> (c, HttpStatus.OK);
 			} else {
-				return new Catalog();
+				return new ResponseEntity<Catalog> (new Catalog(), HttpStatus.OK);
 			}
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Catalog can not be deleted", e);
+			return new ResponseEntity<Catalog> (HttpStatus.NOT_FOUND);
 		}
 	}
 }
