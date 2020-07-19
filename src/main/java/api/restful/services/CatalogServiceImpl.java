@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.awt.Point;
 import java.awt.Polygon;
 
@@ -25,33 +27,10 @@ public class CatalogServiceImpl implements CatalogService {
 
     public List<Catalog> listCatalog() {
         try {
-            List<Catalog> catalog_response = new ArrayList<Catalog>();
-            List<Catalog> catalogs = (List<Catalog>) this.catalogRepository.findAll();
-            List<Coordinate> coordinates = (List<Coordinate>) this.coordinateRepository.findAll();
-            for (Catalog catalog : catalogs) {
-                Catalog cat = new Catalog(
-                    catalog.getName(),
-                    catalog.getDescription(),
-                    catalog.getBand(),
-                    catalog.getDateTime(),
-                    new ArrayList<Coordinate>(),
-                    catalog.getImage()
-                );
-                cat.setId(catalog.getId());
-                for (Coordinate coord : coordinates) {
-                    if ( coord.getCatalog().getId().equals(catalog.getId())) {
-                        Coordinate latlong = new Coordinate(
-                            coord.getProjection(),
-                            coord.getLatitude(),
-                            coord.getLongitude(),
-                            null
-                         );
-                        latlong.setId(coord.getId());
-                        cat.getCoordinates().add(latlong);
-                    }
-                }
-                catalog_response.add(cat);
-            }
+            List<Catalog> catalog_response = coordinateRepository.listAll();
+            Set<Catalog> set = new HashSet<>(catalog_response);
+            catalog_response.clear();
+            catalog_response.addAll(set);
             return catalog_response;
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,8 +42,7 @@ public class CatalogServiceImpl implements CatalogService {
     public Item listItems() {
         try {
             Item item = new Item(new ArrayList<Feature>(), 0, 0, "FeatureCollection");
-            List<Catalog> catalogs = (List<Catalog>) this.catalogRepository.findAll();
-            List<Coordinate> coordinates = (List<Coordinate>) this.coordinateRepository.findAll();
+            List<Catalog> catalogs = this.listCatalog();
             for (Catalog catalog : catalogs) {
                 Feature feature = new Feature(
                     catalog.getId(),
@@ -84,7 +62,7 @@ public class CatalogServiceImpl implements CatalogService {
                     catalog.getImage()
                 ));
                 feature.getGeometry().getCoordinates().add(new ArrayList<List<Double>>());
-                for (Coordinate coord : coordinates) {
+                for (Coordinate coord : catalog.getCoordinates()) {
                     if ( coord.getCatalog().getId().equals(catalog.getId())) {
                         List<Double> latlong = new ArrayList<Double>();
                         latlong.add(new Double(coord.getLatitude()));
@@ -149,21 +127,17 @@ public class CatalogServiceImpl implements CatalogService {
 
     @Override
     public Catalog findById(Long id) {
-        List<Catalog> catalogs = this.listCatalog();
-        Catalog result = new Catalog();
-        for (Catalog catalog : catalogs) {
-            if (catalog.getId().equals(id)) {
-                result = catalog;
-                break;
-            }
-        }
-        return result;
+        List<Catalog> result = this.coordinateRepository.find(id);
+        return result.get(0);
     }
 
     @Override
     public boolean remove(Catalog catalog) {
         try {
             this.catalogRepository.delete(catalog);
+            for (Coordinate coord : catalog.getCoordinates()) {
+                this.coordinateRepository.delete(coord);
+            }
             return true;
         } catch (Exception e) {
             e.printStackTrace();

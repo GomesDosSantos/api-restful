@@ -1,5 +1,7 @@
 package api.restful.controller;
 
+import java.util.ArrayList;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +17,13 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import api.restful.model.views.Views;
 import api.restful.model.catalog.Catalog;
+import api.restful.model.catalog.Coordinate;
 import api.restful.model.collection.Item;
 import api.restful.model.geojson.Geojson;
+
 import api.restful.services.CatalogServiceImpl;
 
-
 @RestController
-@CrossOrigin(origins = "http://localhost:8080")
 @RequestMapping(value = "catalog")
 public class CatalogController {
 
@@ -70,6 +72,7 @@ public class CatalogController {
 		try {
 			Catalog c = (Catalog) this.service.findById(new Long(id));
 			if (this.service.remove(c)) {
+				c.setCoordinates(new ArrayList<Coordinate>());
 				return new ResponseEntity<Catalog> (c, HttpStatus.OK);
 			} else {
 				return new ResponseEntity<Catalog> (new Catalog(), HttpStatus.OK);
